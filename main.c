@@ -33,19 +33,33 @@ typedef struct room{
 int main()
 {
     char map[MAP_SIZE][MAP_SIZE];
+    char answer;
 
-    // Set map to NULL ('.')
-    initMap(map);
 
-    // Set origin (center)
-    map[MAP_SIZE / 2][MAP_SIZE / 2] = 'x';
 
-    // Create rooms
-    GenerateRooms(map);
-    GeneratePath(map);
+    while (answer != 'q' & answer != 'Q'){
+        // Clear screen
+        system("cls");
 
-    printMap_Raw(map);
-    printMap_Translated(map);
+        // Set map to NULL ('.')
+        initMap(map);
 
+        // Set origin (center)
+        map[MAP_SIZE / 2][MAP_SIZE / 2] = 'x';
+
+        // Create rooms
+        GenerateRooms(map);
+
+        // Generate path
+        GeneratePath(map);
+
+        // Print
+        // printMap_Raw(map);
+        printMap_Translated(map);
+
+        // Get action
+        printf("Reload [ENTER] | Quit [Q]");
+        answer = getchar();
+    }
     return 0;
 }
