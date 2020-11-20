@@ -1,0 +1,13 @@
+# depslib dependency file v1.0
+1605871365 source:c:\users\franc\desktop\cours\algo\git\map-generator\main.c
+	<stdio.h>
+	<stdlib.h>
+	<locale.h>
+	<time.h>
+	"function.c"
+	"define.h"
+
+1605872688 c:\users\franc\desktop\cours\algo\git\map-generator\function.c
+
+1605862917 c:\users\franc\desktop\cours\algo\git\map-generator\define.h
+

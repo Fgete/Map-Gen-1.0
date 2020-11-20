@@ -1,0 +1,51 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#include <locale.h>
+#include <time.h>
+
+#include "function.c"
+#include "define.h"
+
+/*
+
+        ### 2D MAP GENERATOR ###
+
+This program will generate a game map in 2D
+
+--> map size and some
+
+RETURN map[x][y] = {type of room}
+
+*/
+
+typedef struct room{
+    int number;
+    int type;
+    int x;
+    int y;
+}room;
+// room.number  (basic)
+// room->number (pointer)
+
+// room myRoom={0,1,5,68};
+
+int main()
+{
+    char map[MAP_SIZE][MAP_SIZE];
+
+    // Set map to NULL ('.')
+    initMap(map);
+
+    // Set origin (center)
+    map[MAP_SIZE / 2][MAP_SIZE / 2] = 'x';
+
+    // Create rooms
+    GenerateRooms(map);
+    GeneratePath(map);
+
+    printMap_Raw(map);
+    printMap_Translated(map);
+
+    return 0;
+}
