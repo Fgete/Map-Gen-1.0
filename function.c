@@ -127,10 +127,8 @@ void GenerateRooms_Raw(char map[MAP_SIZE][MAP_SIZE]){
 
 // RECURSIVE METHOD TO CREATE ROOMS
 void RoomExpend(char typeRoom, int x, int y, char map[MAP_SIZE][MAP_SIZE], int iter){
-    printf("%c", typeRoom);
     // typeRoom modification
     TypeModif(&typeRoom, x, y, map);
-    printf("%c", typeRoom);
     map[x][y] = typeRoom;
     iter--;
     if (iter > 0)
