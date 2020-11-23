@@ -13,6 +13,7 @@ void Expend_Up(int, int, char[MAP_SIZE][MAP_SIZE], int);
 void Expend_Down(int, int, char[MAP_SIZE][MAP_SIZE], int);
 void Expend_Left(int, int, char[MAP_SIZE][MAP_SIZE], int);
 void Expend_Right(int, int, char[MAP_SIZE][MAP_SIZE], int);
+void TypeModif(char*, int, int, char[MAP_SIZE][MAP_SIZE]);
 void GeneratePath(char[MAP_SIZE][MAP_SIZE]);
 
 char Translate(char);
@@ -126,6 +127,10 @@ void GenerateRooms_Raw(char map[MAP_SIZE][MAP_SIZE]){
 
 // RECURSIVE METHOD TO CREATE ROOMS
 void RoomExpend(char typeRoom, int x, int y, char map[MAP_SIZE][MAP_SIZE], int iter){
+    printf("%c", typeRoom);
+    // typeRoom modification
+    TypeModif(&typeRoom, x, y, map);
+    printf("%c", typeRoom);
     map[x][y] = typeRoom;
     iter--;
     if (iter > 0)
@@ -192,6 +197,67 @@ void RoomExpend(char typeRoom, int x, int y, char map[MAP_SIZE][MAP_SIZE], int i
             case 'o':
                 Expend_Left(x, y, map, iter);
         }
+}
+
+void TypeModif(char *t, int x, int y, char map[MAP_SIZE][MAP_SIZE]){
+    int path[4];
+    char c = *t;
+
+    // Transform typeRoom to path
+    switch(c){
+        case 'a': path[0]=1; path[1]=1; path[2]=1; path[3]=1; break;
+        case 'b': path[0]=1; path[1]=1; path[2]=0; path[3]=1; break;
+        case 'c': path[0]=1; path[1]=0; path[2]=1; path[3]=1; break;
+        case 'd': path[0]=1; path[1]=1; path[2]=1; path[3]=0; break;
+        case 'e': path[0]=0; path[1]=1; path[2]=1; path[3]=1; break;
+        case 'f': path[0]=1; path[1]=1; path[2]=0; path[3]=0; break;
+        case 'g': path[0]=0; path[1]=0; path[2]=1; path[3]=1; break;
+        case 'h': path[0]=1; path[1]=0; path[2]=0; path[3]=1; break;
+        case 'i': path[0]=0; path[1]=1; path[2]=0; path[3]=1; break;
+        case 'j': path[0]=0; path[1]=1; path[2]=1; path[3]=0; break;
+        case 'k': path[0]=1; path[1]=0; path[2]=1; path[3]=0; break;
+        case 'l': path[0]=1; path[1]=0; path[2]=0; path[3]=0; break;
+        case 'm': path[0]=0; path[1]=0; path[2]=0; path[3]=1; break;
+        case 'n': path[0]=0; path[1]=1; path[2]=0; path[3]=0; break;
+        case 'o': path[0]=0; path[1]=0; path[2]=1; path[3]=0; break;
+    }
+
+    // Modify path
+    if (path[0] == 1)
+        if (map[x-1][y] != '.')
+            path[0] = 0;
+    if (path[1] == 1)
+        if (map[x+1][y] != '.')
+            path[1] = 0;
+    if (path[2] == 1)
+        if (map[x][y-1] != '.')
+            path[2] = 0;
+    if (path[3] == 1)
+        if (map[x][y+1] != '.')
+            path[3] = 0;
+
+    // Transform path to modify typeRoom
+    if (path[0] == 1 && path[1] == 0 && path[2] == 0 && path[3] == 0){*t = 'l';}
+    else if (path[0] == 0 && path[1] == 1 && path[2] == 0 && path[3] == 0){*t = 'n';}
+    else if (path[0] == 0 && path[1] == 0 && path[2] == 1 && path[3] == 0){*t = 'o';}
+    else if (path[0] == 0 && path[1] == 0 && path[2] == 0 && path[3] == 1){*t = 'm';}
+
+    else if (path[0] == 1 && path[1] == 1 && path[2] == 0 && path[3] == 0){*t = 'f';}
+    else if (path[0] == 0 && path[1] == 0 && path[2] == 1 && path[3] == 1){*t = 'g';}
+
+    else if (path[0] == 1 && path[1] == 0 && path[2] == 0 && path[3] == 1){*t = 'h';}
+    else if (path[0] == 0 && path[1] == 1 && path[2] == 0 && path[3] == 1){*t = 'i';}
+    else if (path[0] == 0 && path[1] == 1 && path[2] == 1 && path[3] == 0){*t = 'j';}
+    else if (path[0] == 1 && path[1] == 0 && path[2] == 1 && path[3] == 0){*t = 'k';}
+
+    else if (path[0] == 1 && path[1] == 1 && path[2] == 0 && path[3] == 1){*t = 'b';}
+    else if (path[0] == 1 && path[1] == 0 && path[2] == 1 && path[3] == 1){*t = 'c';}
+    else if (path[0] == 1 && path[1] == 1 && path[2] == 1 && path[3] == 0){*t = 'd';}
+    else if (path[0] == 0 && path[1] == 1 && path[2] == 1 && path[3] == 1){*t = 'e';}
+
+    else if (path[0] == 1 && path[1] == 1 && path[2] == 1 && path[3] == 1){*t = 'a';}
+    else {*t = '/';}
+
 }
 
 // UP
