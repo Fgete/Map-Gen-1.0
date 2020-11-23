@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <locale.h>
 #include <time.h>
 
 #include "function.c"
@@ -45,10 +44,15 @@ int main()
         initMap(map);
 
         // Set origin (center)
-        map[MAP_SIZE / 2][MAP_SIZE / 2] = 'x';
+        RoomExpend('a', MAP_SIZE / 2, MAP_SIZE / 2, map, ITERATION);
+        // RoomExpend(char typeRoom, int x, int y, char map[MAP_SIZE][MAP_SIZE]);
+        // map[MAP_SIZE / 2][MAP_SIZE / 2] = 'x';
 
-        // Create rooms
-        GenerateRooms(map);
+        // Create rooms (as 'x')
+        // GenerateRooms_Raw(map);
+
+        // Translate map to x
+        mapToX(map);
 
         // Generate path
         GeneratePath(map);

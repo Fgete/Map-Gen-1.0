@@ -3,10 +3,16 @@ const int ITERATION = 10;
 
 // PROTOTYPE
 void initMap(char[MAP_SIZE][MAP_SIZE]);
+void mapToX(char[MAP_SIZE][MAP_SIZE]);
 void printMap_Raw(char[MAP_SIZE][MAP_SIZE]);
 void printMap_Translated(char[MAP_SIZE][MAP_SIZE]);
 
-void GenerateRooms(char[MAP_SIZE][MAP_SIZE]);
+void GenerateRooms_Raw(char[MAP_SIZE][MAP_SIZE]);
+void RoomExpend(char, int, int, char[MAP_SIZE][MAP_SIZE], int);
+void Expend_Up(int, int, char[MAP_SIZE][MAP_SIZE], int);
+void Expend_Down(int, int, char[MAP_SIZE][MAP_SIZE], int);
+void Expend_Left(int, int, char[MAP_SIZE][MAP_SIZE], int);
+void Expend_Right(int, int, char[MAP_SIZE][MAP_SIZE], int);
 void GeneratePath(char[MAP_SIZE][MAP_SIZE]);
 
 char Translate(char);
@@ -18,13 +24,21 @@ void initMap(char map[MAP_SIZE][MAP_SIZE]){
             map[x][y] = '.';
 }
 
+// MAP TO X
+void mapToX(char map[MAP_SIZE][MAP_SIZE]){
+    for (int x = 0; x < MAP_SIZE; x++)
+        for (int y = 0; y < MAP_SIZE; y++)
+            if (map[x][y] != '.')
+                map[x][y] = 'x';
+}
+
 // PRINT MAP
 void printMap_Raw(char map[MAP_SIZE][MAP_SIZE]){
     printf("--- MAP RAW ---\n");
     for (int x = 0; x < MAP_SIZE; x++){
         for (int y = 0; y < MAP_SIZE; y++)
             printf("%c", map[x][y]);
-    printf("\n");
+        printf("\n");
     }
     printf("\n");
 }
@@ -68,8 +82,8 @@ char Translate(char c){
     }
 }
 
-// CREATE ROOMS
-void GenerateRooms(char map[MAP_SIZE][MAP_SIZE]){
+// CREATE ROOMS WITHOUT PATH
+void GenerateRooms_Raw(char map[MAP_SIZE][MAP_SIZE]){
     // Random init
     srand(GetTickCount());
     // for n iterations
@@ -107,6 +121,112 @@ void GenerateRooms(char map[MAP_SIZE][MAP_SIZE]){
             for (int y = 0; y < MAP_SIZE; y++)
                 if (map[x][y] == 'o')
                     map[x][y] = 'x';
+    }
+}
+
+// RECURSIVE METHOD TO CREATE ROOMS
+void RoomExpend(char typeRoom, int x, int y, char map[MAP_SIZE][MAP_SIZE], int iter){
+    map[x][y] = typeRoom;
+    iter--;
+    if (iter > 0)
+        switch(typeRoom){
+            case 'a':
+                Expend_Up(x, y, map, iter);
+                Expend_Down(x, y, map, iter);
+                Expend_Left(x, y, map, iter);
+                Expend_Right(x, y, map, iter);
+            break;
+            case 'b':
+                Expend_Up(x, y, map, iter);
+                Expend_Down(x, y, map, iter);
+                Expend_Right(x, y, map, iter);
+            break;
+            case 'c':
+                Expend_Up(x, y, map, iter);
+                Expend_Left(x, y, map, iter);
+                Expend_Right(x, y, map, iter);
+            break;
+            case 'd':
+                Expend_Up(x, y, map, iter);
+                Expend_Down(x, y, map, iter);
+                Expend_Left(x, y, map, iter);
+            break;
+            case 'e':
+                Expend_Down(x, y, map, iter);
+                Expend_Left(x, y, map, iter);
+                Expend_Right(x, y, map, iter);
+            break;
+            case 'f':
+                Expend_Up(x, y, map, iter);
+                Expend_Down(x, y, map, iter);
+            break;
+            case 'g':
+                Expend_Left(x, y, map, iter);
+                Expend_Right(x, y, map, iter);
+            break;
+            case 'h':
+                Expend_Up(x, y, map, iter);
+                Expend_Right(x, y, map, iter);
+            break;
+            case 'i':
+                Expend_Down(x, y, map, iter);
+                Expend_Right(x, y, map, iter);
+            break;
+            case 'j':
+                Expend_Down(x, y, map, iter);
+                Expend_Left(x, y, map, iter);
+            break;
+            case 'k':
+                Expend_Up(x, y, map, iter);
+                Expend_Left(x, y, map, iter);
+            break;
+            case 'l':
+                Expend_Up(x, y, map, iter);
+            break;
+            case 'm':
+                Expend_Right(x, y, map, iter);
+            break;
+            case 'n':
+                Expend_Down(x, y, map, iter);
+            break;
+            case 'o':
+                Expend_Left(x, y, map, iter);
+        }
+}
+
+// UP
+void Expend_Up(int x, int y, char map[MAP_SIZE][MAP_SIZE], int iter){
+    char childs[9] = {'a','b','d','e','f','i','j','n'};
+    if (map[x-1][y] == '.'){
+        map[x-1][y] = childs[rand() % 8];
+        RoomExpend(map[x-1][y], x-1, y, map, iter);
+    }
+}
+
+// DOWN
+void Expend_Down(int x, int y, char map[MAP_SIZE][MAP_SIZE], int iter){
+    char childs[9] = {'a','b','c','d','f','h','k','l'};
+    if (map[x+1][y] == '.'){
+        map[x+1][y] = childs[rand() % 8];
+        RoomExpend(map[x+1][y], x+1, y, map, iter);
+    }
+}
+
+// LEFT
+void Expend_Left(int x, int y, char map[MAP_SIZE][MAP_SIZE], int iter){
+    char childs[9] = {'a','b','c','e','g','h','i','m'};
+    if (map[x][y-1] == '.'){
+        map[x][y-1] = childs[rand() % 8];
+        RoomExpend(map[x][y-1], x, y-1, map, iter);
+    }
+}
+
+// RIGHT
+void Expend_Right(int x, int y, char map[MAP_SIZE][MAP_SIZE], int iter){
+    char childs[9] = {'a','c','d','e','g','j','k','o'};
+    if (map[x][y+1] == '.'){
+        map[x][y+1] = childs[rand() % 8];
+        RoomExpend(map[x][y+1], x, y+1, map, iter);
     }
 }
 
