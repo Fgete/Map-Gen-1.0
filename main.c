@@ -52,13 +52,13 @@ int main()
         // GenerateRooms_Raw(map);
 
         // Translate map to x
-        mapToX(map);
+        // mapToX(map);
 
         // Generate path
-        GeneratePath(map);
+        // GeneratePath(map);
 
         // Print
-        // printMap_Raw(map);
+        printMap_Raw(map);
         printMap_Translated(map);
 
         // Get action

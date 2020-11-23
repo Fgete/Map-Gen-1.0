@@ -127,9 +127,12 @@ void GenerateRooms_Raw(char map[MAP_SIZE][MAP_SIZE]){
 
 // RECURSIVE METHOD TO CREATE ROOMS
 void RoomExpend(char typeRoom, int x, int y, char map[MAP_SIZE][MAP_SIZE], int iter){
+    // printf("%c", typeRoom);
     // typeRoom modification
     TypeModif(&typeRoom, x, y, map);
     map[x][y] = typeRoom;
+    // printf("%c ", typeRoom);
+
     iter--;
     if (iter > 0)
         switch(typeRoom){
@@ -197,12 +200,9 @@ void RoomExpend(char typeRoom, int x, int y, char map[MAP_SIZE][MAP_SIZE], int i
         }
 }
 
-void TypeModif(char *t, int x, int y, char map[MAP_SIZE][MAP_SIZE]){
-    int path[4];
-    char c = *t;
-
+void TypeRoomToPath(int path[4], char t){
     // Transform typeRoom to path
-    switch(c){
+    switch(t){
         case 'a': path[0]=1; path[1]=1; path[2]=1; path[3]=1; break;
         case 'b': path[0]=1; path[1]=1; path[2]=0; path[3]=1; break;
         case 'c': path[0]=1; path[1]=0; path[2]=1; path[3]=1; break;
@@ -218,21 +218,36 @@ void TypeModif(char *t, int x, int y, char map[MAP_SIZE][MAP_SIZE]){
         case 'm': path[0]=0; path[1]=0; path[2]=0; path[3]=1; break;
         case 'n': path[0]=0; path[1]=1; path[2]=0; path[3]=0; break;
         case 'o': path[0]=0; path[1]=0; path[2]=1; path[3]=0; break;
+        default : path[0]=1; path[1]=1; path[2]=1; path[3]=1; break;
     }
+}
 
+void TypeModif(char *t, int x, int y, char map[MAP_SIZE][MAP_SIZE]){
+    int path[4], pathUp[4], pathDown[4], pathLeft[4], pathRight[4];
+    TypeRoomToPath(path, *t);
+    TypeRoomToPath(pathUp, map[x-1][y]);
+    TypeRoomToPath(pathDown, map[x+1][y]);
+    TypeRoomToPath(pathLeft, map[x][y-1]);
+    TypeRoomToPath(pathRight, map[x][y+1]);
+    int pathAround[4] = {pathUp[1],pathDown[0],pathLeft[3],pathRight[2]};
+
+    printf("%d%d%d%d ", path[0], path[1], path[2], path[3]);
     // Modify path
-    if (path[0] == 1)
-        if (map[x-1][y] != '.')
+    if (path[0] == 1) // Path Up
+        if (path[0] != pathAround[0])
             path[0] = 0;
-    if (path[1] == 1)
-        if (map[x+1][y] != '.')
+    if (path[1] == 1) // Path Down
+        if (path[1] != pathAround[1])
             path[1] = 0;
-    if (path[2] == 1)
-        if (map[x][y-1] != '.')
+    if (path[2] == 1) // Path Left
+        if (path[2] != pathAround[2])
             path[2] = 0;
-    if (path[3] == 1)
-        if (map[x][y+1] != '.')
+    if (path[3] == 1) // Path Right
+        if (path[3] != pathAround[3])
             path[3] = 0;
+
+    printf("%d%d%d%d ", pathUp[1], pathDown[0], pathLeft[3], pathRight[2]);
+    printf("%d%d%d%d \n", path[0], path[1], path[2], path[3]);
 
     // Transform path to modify typeRoom
     if (path[0] == 1 && path[1] == 0 && path[2] == 0 && path[3] == 0){*t = 'l';}
@@ -255,7 +270,6 @@ void TypeModif(char *t, int x, int y, char map[MAP_SIZE][MAP_SIZE]){
 
     else if (path[0] == 1 && path[1] == 1 && path[2] == 1 && path[3] == 1){*t = 'a';}
     else {*t = '/';}
-
 }
 
 // UP
